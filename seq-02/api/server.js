@@ -1,0 +1,12 @@
+const express = require('express');
+const os = require('os');
+const app = express();
+let ready = true;
+const port = Number(process.env.PORT || 3000);
+app.get('/', (req,res)=>res.json({message:'Hello Kubernetes',pod:os.hostname(),version:process.env.APP_VERSION||'v1',time:new Date().toISOString()}));
+app.get('/health/live',(req,res)=>res.status(200).json({alive:true}));
+app.get('/health/ready',(req,res)=>res.status(ready?200:503).json({ready}));
+app.post('/admin/ready/:state',(req,res)=>{ready=req.params.state==='true';res.json({ready,pod:os.hostname()});});
+app.post('/admin/crash',(req,res)=>{res.json({crashing:true});setTimeout(()=>process.exit(1),100);});
+app.get('/slow',(req,res)=>setTimeout(()=>res.json({pod:os.hostname()}),3000));
+app.listen(port,'0.0.0.0',()=>console.log(`API on ${port}`));
