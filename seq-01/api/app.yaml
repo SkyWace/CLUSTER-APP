@@ -1,0 +1,32 @@
+apiVersion: app/v1
+kind: Deployment
+metadata:
+  name: api
+  namespace: demo-simple
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+
+name: api
+  image: demo-api:v1
+  imagePullPolicy: IfNotPresent
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+  namespace: demo-simple
+spec:
+  selector:
+    app: api
+  ports:
+    port: 80
+    targetPort: 3000
