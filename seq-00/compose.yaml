@@ -1,0 +1,15 @@
+services:
+  api-1:
+    build: ./api
+  api-2:
+    build: ./api
+  api-3:
+    build: ./api
+  load-balencer:
+    build: ./load-balancer
+    ports:
+      - "8080:8080"
+    depends_on:
+      - api-1
+      - api-2
+      - api-3
